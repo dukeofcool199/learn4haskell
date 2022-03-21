@@ -570,72 +570,15 @@ isVowel c
 --isVowel 'u' = True
 --isVowel _ = False
 
--- |
--- == Local variables and functions
---
--- So far, we've been playing only with simple expressions and function
--- definitions. However, in some cases, expressions may become complicated, and it
--- could make sense to introduce some helper variables.
---
--- You can use the let-in construct in Haskell to define variables.
--- Here goes an example:
---
--- @
--- half :: Int -> Int
--- half n = let halfN = div n 2 in halfN
--- @
---
--- ♫ NOTE: __let-in__ is also an expression! You can't just define variables; you
---   also need to return some expression that may use defined variables.
---
--- The syntax for defining multiple variables requires to care about indentation
--- more, but there is nothing special in it as well:
---
--- @
--- halfAndTwice :: Int -> (Int, Int)
--- halfAndTwice n =
---     let halfN = div n 2
---         twiceN = n * 2
---     in (halfN, twiceN)
--- @
---
--- In addition to let-in (or sometimes even alternatively to let-in) you can use
--- the __where__ construct to define local variables and functions.
--- And, again, the example:
---
--- @
--- pythagoras :: Double -> Double -> Double
--- pythagoras a b = square a + square b
---   where
---     square :: Double -> Double
---     square x = x ^ 2
--- @
---
--- You can define multiple functions inside __where__!
--- Just remember to keep proper indentation.
-
--- |
--- =⚔️= Task 9
---
--- Implement a function that returns the sum of the last two digits of a number.
---
--- >>> sumLast2 42
--- 6
--- >>> sumLast2 134
--- 7
--- >>> sumLast2 1
--- 1
---
--- Try to introduce variables in this task (either with let-in or where) to avoid
--- specifying complex expressions.
 sumLast2 :: Int -> Int
 sumLast2 n
   | n < 10 = n
-  | otherwise = (last numList) + (secondToLast numList)
+  | otherwise = (lastElement numList) + (secondToLastElement numList)
   where
     numList = show n
-    last (xs : x : y) = read y :: Int
-    secondToLast (xs : x : y) = read x :: Int
+    lastElement n = read $ [last n]
+    secondToLastElement (x : _ : []) = read [x] :: Int
+    secondToLastElement (x : xs) = secondToLastElement xs
 
 -- |
 -- =💣= Task 10*
@@ -653,7 +596,11 @@ sumLast2 n
 --
 -- You need to use recursion in this task. Feel free to return to it later, if you
 -- aren't ready for this boss yet!
-firstDigit n = error "firstDigit: Not implemented!"
+firstDigit :: Int -> Int
+firstDigit n
+  | n < 10 = n
+  | mod n 10 == 0 = firstDigit $ div n 10
+  | otherwise = firstDigit $ n - 1
 
 {-
 You did it! Now it is time to open a pull request with your changes
